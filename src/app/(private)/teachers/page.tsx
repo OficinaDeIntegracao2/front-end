@@ -1,3 +1,5 @@
+import { Toaster } from "sonner";
+
 import {
   PageActions,
   PageContainer,
@@ -25,6 +27,7 @@ const TeachersPage = () => {
       <PageContent>
         <h1>Professores</h1>
       </PageContent>
+      <Toaster richColors />
     </PageContainer>
   );
 };
