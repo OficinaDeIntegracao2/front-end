@@ -2,10 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast, Toaster } from "sonner";
 import { z } from "zod";
 
+import { authenticate } from "@/actions/authentication";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -29,6 +33,8 @@ const formSchema = z.object({
 const AuthenticationPage = () => {
   const [seePassword, setSeePassword] = useState<boolean>(false);
 
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,8 +43,17 @@ const AuthenticationPage = () => {
     },
   });
 
+  const authenticationAction = useAction(authenticate, {
+    onSuccess: () => {
+      router.push("/");
+    },
+    onError: () => {
+      toast.error("Erro ao fazer login!");
+    },
+  });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    authenticationAction.execute(values);
   };
 
   return (
@@ -92,13 +107,18 @@ const AuthenticationPage = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="cursor-pointer">
-                Entrar
+              <Button
+                type="submit"
+                className="cursor-pointer"
+                disabled={authenticationAction.isPending}
+              >
+                {authenticationAction.isPending ? "Entrando ..." : "Entrar"}
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
+      <Toaster richColors />
     </div>
   );
 };
