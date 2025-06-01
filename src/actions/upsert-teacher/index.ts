@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 import { actionClient } from "@/lib/safe-action";
@@ -28,4 +29,6 @@ export const upsertTeacher = actionClient
     if (response.status === 400) {
       return { status: 400, error: "email_found" };
     }
+
+    revalidatePath("/teachers");
   });
