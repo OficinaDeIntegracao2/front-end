@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { upsertTeacher } from "@/actions/upsert-teacher";
+import { upsertVolunteers } from "@/actions/upsert-volunteers";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import {
@@ -27,11 +27,11 @@ const formSchema = z.object({
   password: z.string().min(1, { message: "Senha é obrigatória" }),
 });
 
-interface UpsertTeacherFormProps {
+interface UpsertVolunteersFormProps {
   onSuccess?: () => void;
 }
 
-const UpsertTeacherForm = ({ onSuccess }: UpsertTeacherFormProps) => {
+const UpsertVolunteersForm = ({ onSuccess }: UpsertVolunteersFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,21 +41,22 @@ const UpsertTeacherForm = ({ onSuccess }: UpsertTeacherFormProps) => {
     },
   });
 
-  const upsertTeacherAction = useAction(upsertTeacher, {
+  const upsertVolunteersAction = useAction(upsertVolunteers, {
     onSuccess: ({ data }) => {
       if (data?.status === 400) {
         toast.warning("Email já cadastrado!");
         return;
       }
-      toast.success("Professor adicionado com sucesso!");
+      toast.success("Aluno voluntário criado com sucesso!");
       onSuccess?.();
     },
     onError: () => {
-      toast.error("Erro ao adicionar professor!");
+      toast.error("Erro ao criar aluno voluntário!");
     },
   });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    upsertTeacherAction.execute(values);
+    upsertVolunteersAction.execute(values);
   };
 
   return (
@@ -101,12 +102,15 @@ const UpsertTeacherForm = ({ onSuccess }: UpsertTeacherFormProps) => {
           )}
         />
         <DialogFooter>
-          <Button type="submit" disabled={upsertTeacherAction.isExecuting}>
-            {upsertTeacherAction.isExecuting ? "Adicionando..." : "Adicionar"}
+          <Button type="submit" disabled={upsertVolunteersAction.isExecuting}>
+            {upsertVolunteersAction.isExecuting
+              ? "Adicionando..."
+              : "Adicionar"}
           </Button>
         </DialogFooter>
       </form>
     </Form>
   );
 };
-export default UpsertTeacherForm;
+
+export default UpsertVolunteersForm;
