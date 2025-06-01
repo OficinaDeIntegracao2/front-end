@@ -22,7 +22,7 @@ const items = [
   },
   {
     title: "Aluno Voluntário",
-    url: "#",
+    url: "/volunteers",
     icon: Users,
   },
 ];
