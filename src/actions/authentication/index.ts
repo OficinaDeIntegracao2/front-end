@@ -25,18 +25,9 @@ export const authenticate = actionClient
 
     const cookieStore = await cookies();
 
-    cookieStore.set("token", data.token, {
-      httpOnly: true,
-      secure: true,
-    });
+    cookieStore.set("token", data.token);
 
-    cookieStore.set("id", data.user.id, {
-      httpOnly: true,
-      secure: true,
-    });
+    cookieStore.set("id", data.user.id);
 
-    cookieStore.set("name", data.user.name, {
-      httpOnly: true,
-      secure: true,
-    });
+    cookieStore.set("name", data.user.name);
   });
