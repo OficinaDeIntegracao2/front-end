@@ -1,33 +1,24 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { AuthError } from "next-auth";
 
-import { actionClient } from "@/lib/safe-action";
+import { signIn } from "@/lib/auth";
 
-import { authenticationSchema } from "./schema";
-
-export const authenticate = actionClient
-  .schema(authenticationSchema)
-  .action(async ({ parsedInput }) => {
-    const response = await fetch("http://localhost:8080/api/auth/login", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(parsedInput),
+export const authenticate = async (email: string, password: string) => {
+  try {
+    await signIn("credentials", {
+      email: email,
+      password: password,
+      redirect: false,
     });
-
-    if (response.status === 400) {
-      throw new Error("Usuário não encontrado!");
+    return { success: true };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { success: false, message: "Email ou senha incorretos." };
     }
-
-    const data = await response.json();
-
-    const cookieStore = await cookies();
-
-    cookieStore.set("token", data.token);
-
-    cookieStore.set("id", data.user.id);
-
-    cookieStore.set("name", data.user.name);
-  });
+    return {
+      success: false,
+      message: "Algum erro aconteceu! Tente novamente",
+    };
+  }
+};

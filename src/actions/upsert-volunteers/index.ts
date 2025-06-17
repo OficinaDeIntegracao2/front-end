@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 
+import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/safe-action";
 
 import { upsertVolunteersSchema } from "./schema";
@@ -10,18 +10,13 @@ import { upsertVolunteersSchema } from "./schema";
 export const upsertVolunteers = actionClient
   .schema(upsertVolunteersSchema)
   .action(async ({ parsedInput }) => {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+    const session = await auth();
 
-    if (!token) {
-      throw new Error("Token not found");
-    }
-
-    const response = await fetch("http://localhost:8080/api/users/volunteers", {
+    const response = await fetch(`${process.env.URL_API}api/users/volunteers`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${session?.user.token}`,
       },
       body: JSON.stringify(parsedInput),
     });

@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 
 import { DataTable } from "@/components/ui/data-table";
@@ -11,17 +10,17 @@ import {
   PageTitle,
 } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-container";
+import { auth } from "@/lib/auth";
 
 import AddVolunteersButton from "./_components/add-volunteers-button";
 import { columns } from "./_components/table-columns";
 
 const VolunteersPage = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+  const session = await auth();
 
-  const response = await fetch("http://localhost:8080/api/users/volunteers", {
+  const response = await fetch(`${process.env.URL_API}api/users/volunteers`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${session?.user.token}`,
     },
   });
 

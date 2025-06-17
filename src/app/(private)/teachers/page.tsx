@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 
 import { DataTable } from "@/components/ui/data-table";
@@ -11,17 +10,17 @@ import {
   PageHeaderContent,
   PageTitle,
 } from "@/components/ui/page-container";
+import { auth } from "@/lib/auth";
 
 import AddTeacherButton from "./_components/add-teacher-button";
 import { columns } from "./_components/table-columns";
 
 const TeachersPage = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+  const session = await auth();
 
-  const response = await fetch("http://localhost:8080/api/users/professors", {
+  const response = await fetch(`${process.env.URL_API}api/users/professors`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${session?.user.token}`,
     },
   });
 
