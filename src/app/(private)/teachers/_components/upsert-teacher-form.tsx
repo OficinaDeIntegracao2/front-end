@@ -54,6 +54,7 @@ const UpsertTeacherForm = ({ onSuccess }: UpsertTeacherFormProps) => {
       toast.error("Erro ao adicionar professor!");
     },
   });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     upsertTeacherAction.execute(values);
   };

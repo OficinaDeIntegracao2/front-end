@@ -10,10 +10,25 @@ import {
   PageHeaderContent,
   PageTitle,
 } from "@/components/ui/page-container";
+import { auth } from "@/lib/auth";
 
-import AddTeacherButton from "../teachers/_components/add-teacher-button";
+import AddSubjectButton from "./_components/add-subject-button";
+import { columns } from "./_components/table-columns";
 
-const SubjectsPage = () => {
+const SubjectsPage = async () => {
+  const session = await auth();
+
+  const response = await fetch(
+    `${process.env.URL_API}api/professors/${session?.user.id}/subjects`,
+    {
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
+    },
+  );
+
+  const data = await response.json();
+
   return (
     <PageContainer>
       <PageHeader>
@@ -22,10 +37,12 @@ const SubjectsPage = () => {
           <PageDescription>Gerencie as Matérias.</PageDescription>
         </PageHeaderContent>
         <PageActions>
-          <AddTeacherButton />
+          <AddSubjectButton />
         </PageActions>
       </PageHeader>
-      <PageContent></PageContent>
+      <PageContent>
+        <DataTable data={data.subjects} columns={columns} />
+      </PageContent>
       <Toaster richColors />
     </PageContainer>
   );
