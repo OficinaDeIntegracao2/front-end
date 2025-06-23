@@ -1,8 +1,22 @@
 "use client";
 
 import { EditIcon, MoreVerticalIcon, TrashIcon } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
+import { toast } from "sonner";
 
+import { deleteSubject } from "@/actions/delete-subject";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -21,7 +35,24 @@ interface SubjectAction {
 const SubjectTableActions = ({ subject }: SubjectAction) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  console.log(subject);
+  const deleteSubjectAction = useAction(deleteSubject, {
+    onSuccess: ({ data }) => {
+      if (data?.success) {
+        toast.success("Matéria deletada com sucesso.");
+        return;
+      }
+      toast.error("Erro ao deletar matéria.");
+    },
+    onError: () => {
+      toast.error("Erro ai deletar matéria.");
+    },
+  });
+
+  const handleDeleteSubject = () => {
+    if (!subject) return;
+
+    deleteSubjectAction.execute({ id: subject.id });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -36,10 +67,30 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
             <EditIcon />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <TrashIcon />
-            Excluir
-          </DropdownMenuItem>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <TrashIcon />
+                Excluir
+              </DropdownMenuItem>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Tem certeza que deseja deletar essa matéria?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Essa ação não pode ser revertida. Isso irá deletar a materia.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteSubject}>
+                  Deletar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </DropdownMenuContent>
       </DropdownMenu>
     </Dialog>
