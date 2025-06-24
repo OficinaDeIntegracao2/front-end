@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -34,6 +35,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { DetailSubject } from "./table-actions";
 
 const items = [
   {
@@ -91,30 +94,47 @@ const formSchema = z
 
 interface UpsertSubjectFormProps {
   onSuccess?: () => void;
+  subject?: DetailSubject;
+  isOpen: boolean;
 }
 
-const UpsertSubjectForm = ({ onSuccess }: UpsertSubjectFormProps) => {
+const UpsertSubjectForm = ({
+  onSuccess,
+  subject,
+  isOpen,
+}: UpsertSubjectFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      weekdays: [],
-      startTime: "",
-      endTime: "",
-      durationWeeks: "",
+      name: subject?.name ?? "",
+      description: subject?.description ?? "",
+      weekdays: subject?.weekdays?.split(",") ?? [],
+      startTime: subject?.startTime ?? "",
+      endTime: subject?.endTime ?? "",
+      durationWeeks: subject?.durationWeeks ?? "",
     },
   });
 
   const upsertSubjectAction = useAction(upsertSubject, {
     onSuccess: ({ data }) => {
-      if (data?.success) {
-        toast.success("Matéria adicionado com sucesso!");
-        onSuccess?.();
-        return;
+      if (!data?.edit) {
+        if (data?.success) {
+          toast.success("Matéria adicionado com sucesso!");
+          onSuccess?.();
+          return;
+        }
+        toast.error(data?.message);
       }
-      toast.error(data?.message);
+
+      if (data?.edit) {
+        if (data?.success) {
+          toast.success("Matéria editada com sucesso!");
+          onSuccess?.();
+          return;
+        }
+        toast.error("Algo de errado aconteceu.");
+      }
     },
     onError: () => {
       toast.error("Erro ao adicionar matéria!");
@@ -122,13 +142,29 @@ const UpsertSubjectForm = ({ onSuccess }: UpsertSubjectFormProps) => {
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    upsertSubjectAction.execute(values);
+    upsertSubjectAction.execute({
+      ...values,
+      subjectId: subject?.id,
+    });
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        name: subject?.name,
+        description: subject?.description,
+        weekdays: subject?.weekdays?.split(","),
+        startTime: subject?.startTime,
+        endTime: subject?.endTime,
+        durationWeeks: subject?.durationWeeks,
+      });
+    }
+  }, [isOpen, form, subject]);
 
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Adicionar Matéria</DialogTitle>
+        <DialogTitle>{subject ? "Editar" : "Adicionar"} Matéria</DialogTitle>
         <DialogDescription>
           Adicionar uma matéria para o sistema.
         </DialogDescription>

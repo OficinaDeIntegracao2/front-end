@@ -12,6 +12,7 @@ export const upsertSubjectSchema = z
     startTime: z.string().min(1, { message: "Hora de início é obrigatória." }),
     endTime: z.string().min(1, { message: "Hora de término é obrigatória." }),
     durationWeeks: z.string().min(1, { message: "Duração é obrigatória." }),
+    subjectId: z.string().optional(),
   })
   .refine(
     (data) => {

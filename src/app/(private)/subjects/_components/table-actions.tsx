@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { deleteSubject } from "@/actions/delete-subject";
+import { detailSubject } from "@/actions/detail-subject";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,13 +28,34 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Subject } from "./table-columns";
+import UpsertSubjectForm from "./upsert-subject-form";
 
 interface SubjectAction {
   subject: Subject;
 }
 
+type Person = {
+  id: string;
+  name: string;
+};
+
+export type DetailSubject = {
+  id: string;
+  name: string;
+  description: string;
+  weekdays: string;
+  startTime: string;
+  endTime: string;
+  durationWeeks: string;
+  totalHours: number;
+  professor: Person;
+  volunteers: Person[];
+  enrollments: Person[];
+};
+
 const SubjectTableActions = ({ subject }: SubjectAction) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [detail, setDetail] = useState<DetailSubject>();
 
   const deleteSubjectAction = useAction(deleteSubject, {
     onSuccess: ({ data }) => {
@@ -54,6 +76,13 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
     deleteSubjectAction.execute({ id: subject.id });
   };
 
+  const handleEditSubject = async () => {
+    const result = await detailSubject(subject.id);
+
+    setDetail(result.subject);
+    setIsOpen(true);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu>
@@ -63,7 +92,7 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditSubject}>
             <EditIcon />
             Editar
           </DropdownMenuItem>
@@ -93,6 +122,12 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
           </AlertDialog>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <UpsertSubjectForm
+        onSuccess={() => setIsOpen(false)}
+        isOpen={isOpen}
+        subject={detail}
+      />
     </Dialog>
   );
 };

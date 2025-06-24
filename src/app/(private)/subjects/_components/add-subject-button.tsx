@@ -19,7 +19,7 @@ const AddSubjectButton = () => {
           Adicionar Matéria
         </Button>
       </DialogTrigger>
-      <UpsertSubjectForm onSuccess={() => setIsOpen(false)} />
+      <UpsertSubjectForm onSuccess={() => setIsOpen(false)} isOpen={isOpen} />
     </Dialog>
   );
 };
