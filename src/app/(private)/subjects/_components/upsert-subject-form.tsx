@@ -151,12 +151,12 @@ const UpsertSubjectForm = ({
   useEffect(() => {
     if (isOpen) {
       form.reset({
-        name: subject?.name,
-        description: subject?.description,
+        name: subject?.name ?? "",
+        description: subject?.description ?? "",
         weekdays: subject?.weekdays?.split(",") ?? [],
-        startTime: subject?.startTime,
-        endTime: subject?.endTime,
-        durationWeeks: subject?.durationWeeks,
+        startTime: subject?.startTime ?? "",
+        endTime: subject?.endTime ?? "",
+        durationWeeks: subject?.durationWeeks ?? "",
       });
     }
   }, [isOpen, form, subject]);

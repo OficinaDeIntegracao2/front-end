@@ -29,6 +29,8 @@ const SubjectsPage = async () => {
 
   const data = await response.json();
 
+  console.log(typeof data.subjects);
+
   return (
     <PageContainer>
       <PageHeader>
@@ -41,7 +43,10 @@ const SubjectsPage = async () => {
         </PageActions>
       </PageHeader>
       <PageContent>
-        <DataTable data={data.subjects} columns={columns} />
+        <DataTable
+          data={typeof data.subjects === "string" ? [] : data.subjects}
+          columns={columns}
+        />
       </PageContent>
       <Toaster richColors />
     </PageContainer>

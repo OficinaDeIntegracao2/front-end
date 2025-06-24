@@ -38,7 +38,10 @@ const TeachersPage = async () => {
         </PageActions>
       </PageHeader>
       <PageContent>
-        <DataTable columns={columns} data={data.users} />
+        <DataTable
+          columns={columns}
+          data={typeof data.users === "string" ? [] : data.users}
+        />
       </PageContent>
       <Toaster richColors />
     </PageContainer>
