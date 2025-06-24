@@ -153,7 +153,7 @@ const UpsertSubjectForm = ({
       form.reset({
         name: subject?.name,
         description: subject?.description,
-        weekdays: subject?.weekdays?.split(","),
+        weekdays: subject?.weekdays?.split(",") ?? [],
         startTime: subject?.startTime,
         endTime: subject?.endTime,
         durationWeeks: subject?.durationWeeks,
