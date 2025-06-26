@@ -29,8 +29,6 @@ const SubjectsPage = async () => {
 
   const data = await response.json();
 
-  console.log(typeof data.subjects);
-
   return (
     <PageContainer>
       <PageHeader>
