@@ -1,6 +1,7 @@
 "use client";
 
-import { EditIcon, MoreVerticalIcon, TrashIcon } from "lucide-react";
+import { BookOpen, EditIcon, MoreVerticalIcon, TrashIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -57,6 +58,8 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [detail, setDetail] = useState<DetailSubject>();
 
+  const router = useRouter();
+
   const deleteSubjectAction = useAction(deleteSubject, {
     onSuccess: ({ data }) => {
       if (data?.success) {
@@ -83,6 +86,10 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
     setIsOpen(true);
   };
 
+  const handleDetail = () => {
+    router.push(`/subjects/${subject.id}`);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu>
@@ -92,6 +99,10 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem onClick={handleDetail}>
+            <BookOpen />
+            Detalhe
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={handleEditSubject}>
             <EditIcon />
             Editar
