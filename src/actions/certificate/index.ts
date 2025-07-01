@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { auth } from "@/lib/auth";
@@ -17,9 +18,9 @@ export const certificate = actionClient
       const session = await auth();
 
       const response = await fetch(
-        `${process.env.URL_API}api/professors/${session?.user.id}/subjects/${parsedInput.subjectId}`,
+        `${process.env.URL_API}api/professors/${session?.user.id}/subjects/${parsedInput.subjectId}/certificates`,
         {
-          method: "DELETE",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session?.user.token}`,
@@ -30,7 +31,12 @@ export const certificate = actionClient
         },
       );
 
-      return { success: false, message: "Erro ao adicionar hora." };
+      if (response.status === 201) {
+        revalidatePath("/subjects/[slug]");
+        return { success: true };
+      }
+
+      return { success: false, message: "Erro ao gerar certificado." };
     } catch (err) {
       console.log(err);
       return { success: false, message: "Erro ao gerar certificado." };

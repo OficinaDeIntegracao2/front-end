@@ -1,8 +1,11 @@
 "use client";
 
 import { BadgeCheck, CheckSquare, MoreVerticalIcon } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
+import { toast } from "sonner";
 
+import { certificate } from "@/actions/certificate";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -26,7 +29,25 @@ const EnrollmentsTableActions = ({ enrollment }: EnrollmentProps) => {
     setIsOpen(true);
   };
 
-  const handleCertificado = () => {};
+  const certificateAction = useAction(certificate, {
+    onSuccess: ({ data }) => {
+      if (data?.success) {
+        toast.success("Certificado gerado com sucesso!");
+        return;
+      }
+      toast.error(data?.message);
+    },
+    onError: () => {
+      toast.error("Erro ao gerar certificado!");
+    },
+  });
+
+  const handleCertificado = () => {
+    certificateAction.execute({
+      studentId: enrollment.id,
+      subjectId: enrollment.subjectId,
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
