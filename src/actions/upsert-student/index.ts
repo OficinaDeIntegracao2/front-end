@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/safe-action";
 
@@ -27,6 +29,7 @@ export const upsertStudent = actionClient
       );
 
       if (response.status === 201) {
+        revalidatePath("/subjects/[slug]");
         return { success: true };
       }
 

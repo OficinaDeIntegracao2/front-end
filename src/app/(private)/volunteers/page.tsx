@@ -1,5 +1,6 @@
 import { Toaster } from "sonner";
 
+import { getusers } from "@/actions/get-users";
 import { DataTable } from "@/components/ui/data-table";
 import {
   PageActions,
@@ -10,21 +11,12 @@ import {
   PageTitle,
 } from "@/components/ui/page-container";
 import { PageHeader } from "@/components/ui/page-container";
-import { auth } from "@/lib/auth";
 
 import AddVolunteersButton from "./_components/add-volunteers-button";
 import { columns } from "./_components/table-columns";
 
 const VolunteersPage = async () => {
-  const session = await auth();
-
-  const response = await fetch(`${process.env.URL_API}api/users/volunteers`, {
-    headers: {
-      Authorization: `Bearer ${session?.user.token}`,
-    },
-  });
-
-  const data = await response.json();
+  const data = await getusers("volunteers");
 
   return (
     <PageContainer>

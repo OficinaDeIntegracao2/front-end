@@ -1,5 +1,6 @@
 import { Toaster } from "sonner";
 
+import { getusers } from "@/actions/get-users";
 import { DataTable } from "@/components/ui/data-table";
 import {
   PageActions,
@@ -10,21 +11,12 @@ import {
   PageHeaderContent,
   PageTitle,
 } from "@/components/ui/page-container";
-import { auth } from "@/lib/auth";
 
 import AddTeacherButton from "./_components/add-teacher-button";
 import { columns } from "./_components/table-columns";
 
 const TeachersPage = async () => {
-  const session = await auth();
-
-  const response = await fetch(`${process.env.URL_API}api/users/professors`, {
-    headers: {
-      Authorization: `Bearer ${session?.user.token}`,
-    },
-  });
-
-  const data = await response.json();
+  const data = await getusers("professors");
 
   return (
     <PageContainer>
