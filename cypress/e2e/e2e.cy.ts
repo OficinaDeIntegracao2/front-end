@@ -28,6 +28,10 @@ describe("Full test", () => {
       }
     });
 
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.reload();
+
     cy.get('input[name="email"]').type("Teste@teste.com");
     cy.get('input[name="password"]').type("123");
 
@@ -51,14 +55,17 @@ describe("Full test", () => {
     cy.get('input[name="description"]').type("Aula avançada de matemática");
     cy.contains("Quarta-feira").click();
     cy.contains("button", "Selecione um horário").click();
-    cy.get('[data-slot="select-item"]').contains('07:00').click()
+    cy.get('[data-slot="select-item"]').contains("07:00").click();
 
     cy.contains("button", "Selecione um horário").click();
-    cy.get('[data-slot="select-item"]').contains('08:00').click()
+    cy.get('[data-slot="select-item"]').contains("08:00").click();
 
     cy.get('input[name="durationWeeks"]').type("10");
 
     cy.get('button[type="submit"]').click();
 
+    cy.get('[data-testid="subject-actions-trigger"]').first().click();
+
+    cy.get('[data-testid="subject-detail"]').first().click();
   });
 });
