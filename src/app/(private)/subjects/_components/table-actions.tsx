@@ -94,12 +94,12 @@ const SubjectTableActions = ({ subject }: SubjectAction) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" data-testid="subject-actions-trigger">
             <MoreVerticalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={handleDetail}>
+          <DropdownMenuItem onClick={handleDetail} data-testid="subject-detail">
             <BookOpen />
             Detalhe
           </DropdownMenuItem>

@@ -34,7 +34,7 @@ const VolunteerLinkButton = ({ volunteers, subjectId }: VolunteerProps) => {
           <DialogTitle>Vincular Voluntário</DialogTitle>
           <DialogDescription>Vincular voluntário a matéria</DialogDescription>
         </DialogHeader>
-        <UpsertVolunteerForm volunteers={volunteers} subjectId={subjectId} />
+        <UpsertVolunteerForm volunteers={volunteers} subjectId={subjectId}/>
       </DialogContent>
     </Dialog>
   );

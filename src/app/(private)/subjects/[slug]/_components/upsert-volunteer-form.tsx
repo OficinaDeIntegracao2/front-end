@@ -75,7 +75,7 @@ const UpsertVolunteerForm = ({ volunteers, subjectId }: VolunteerProps) => {
               <FormLabel>Voluntário</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full" data-testid="select-volunteer">
                     <SelectValue placeholder="Voluntário..." />
                   </SelectTrigger>
                 </FormControl>
