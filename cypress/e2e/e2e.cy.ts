@@ -67,5 +67,11 @@ describe("Full test", () => {
     cy.get('[data-testid="subject-actions-trigger"]').first().click();
 
     cy.get('[data-testid="subject-detail"]').first().click();
+
+    cy.contains("button", "Vincular").click();
+
+    cy.contains("button", "Voluntário...").click();
+    cy.get('[data-testid="select-volunteer"]').should('contain', 'Aluno Teste');
+
   });
 });
