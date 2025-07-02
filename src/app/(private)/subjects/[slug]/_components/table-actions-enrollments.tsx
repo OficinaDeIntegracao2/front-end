@@ -53,16 +53,16 @@ const EnrollmentsTableActions = ({ enrollment }: EnrollmentProps) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost">
+          <Button size="icon" variant="ghost" data-testid="student-actions-trigger">
             <MoreVerticalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={handlePresenca}>
+          <DropdownMenuItem onClick={handlePresenca} data-testid="student-lancar-presenca">
             <CheckSquare />
             Lançar Presença
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleCertificado}>
+          <DropdownMenuItem onClick={handleCertificado} data-testid="student-gerar-certificado">
             <BadgeCheck />
             Gerar Certificado
           </DropdownMenuItem>

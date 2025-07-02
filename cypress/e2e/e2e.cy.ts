@@ -60,7 +60,7 @@ describe("Full test", () => {
     cy.contains("button", "Selecione um horário").click();
     cy.get('[data-slot="select-item"]').contains("08:00").click();
 
-    cy.get('input[name="durationWeeks"]').type("10");
+    cy.get('input[name="durationWeeks"]').type("1");
 
     cy.get('button[type="submit"]').click();
 
@@ -70,8 +70,46 @@ describe("Full test", () => {
 
     cy.contains("button", "Vincular").click();
 
-    cy.contains("button", "Voluntário...").click();
-    cy.get('[data-testid="select-volunteer"]').should('contain', 'Aluno Teste');
+    cy.get('[data-testid="select-volunteer"]').click();
 
+    Cypress.on("uncaught:exception", (err) => {
+      if (
+        err.message.includes(
+          "ResizeObserver loop completed with undelivered notifications",
+        )
+      ) {
+        return false;
+      }
+    });
+
+    cy.contains('[data-slot="select-item"]', "Aluno Teste")
+      .scrollIntoView()
+      .click({ force: true });
+
+    cy.get('button[type="submit"]').click();
+
+    cy.get('[data-slot="dialog-overlay"]').click("topLeft", { force: true });
+
+    cy.contains("button", "Vincular Estudante").click();
+    cy.get('input[name="name"]').type("Estudante Teste");
+    cy.get('input[name="email"]').type("EstudanteTeste@teste.com");
+
+    cy.get('button[type="submit"]').click();
+
+    cy.get('[data-slot="dialog-overlay"]').click("topLeft", { force: true });
+
+    cy.get('[data-testid="student-actions-trigger"]').first().click();
+
+    cy.get('[data-testid="student-lancar-presenca"]').first().click();
+
+    cy.contains("Selecione...").click();
+    cy.get("button").contains(/^2$/).click();
+    cy.get('button[type="submit"]').click();
+
+    cy.get('[data-slot="dialog-overlay"]').click("topLeft", { force: true });
+
+    cy.get('[data-testid="student-actions-trigger"]').first().click();
+
+    cy.get('[data-testid="student-gerar-certificado"]').first().click();
   });
 });
